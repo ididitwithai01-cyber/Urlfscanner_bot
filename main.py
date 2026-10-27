@@ -63,10 +63,32 @@ async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
         report += f"⚠️ *URLScan:* Error\n"
     await status_msg.edit_text(report, parse_mode="Markdown", disable_web_page_preview=True)
 
-async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("🛡️ *URL Scanner Bot*\nSend me any link to check if it's safe!", parse_mode="Markdown")
+#async def start_command(update: Update, context: ContextTypes.DEFAULT_TYPE):
+  #  await update.message.reply_text("🛡️ *URL Scanner Bot*\nSend me any link to check if it's safe!", parse_mode="Markdown")
+#
+#if __name__ == "__main__":
+  #  app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
+  #  app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
+  #  app.add_handler(CommandHandler("start", start_command))
+  #  print("🤖 Bot Running on Cloud...")
+   # app.run_polling()#
+    
+import threading
+from http.server import SimpleHTTPRequestHandler, HTTPServer
+
+def run_dummy_server():
+    # Automatically pulls Render's required port allocation
+    port = int(os.environ.get("PORT", 8080))
+    server = HTTPServer(("0.0.0.0", port), SimpleHTTPRequestHandler)
+    print(f"Dummy port server listening on port {port}")
+    server.serve_forever()
 
 if __name__ == "__main__":
+    # 1. Start a fake background web server to satisfy Render's port checks
+    server_thread = threading.Thread(target=run_dummy_server, daemon=True)
+    server_thread.start()
+
+    # 2. Start the Telegram bot loop normally
     app = ApplicationBuilder().token(TELEGRAM_BOT_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & (~filters.COMMAND), handle_message))
     app.add_handler(CommandHandler("start", start_command))
